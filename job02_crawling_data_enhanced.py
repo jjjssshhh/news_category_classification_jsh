@@ -8,7 +8,7 @@ import time
 import pandas as pd
 
 max_iteration = 1000 #더보기 누를 최대횟수(이 수와 관계없이 끝에 도달하면 자동 정지)
-category_sel = 3 #카테고리 선택
+category_sel = 1 #카테고리 선택
 li_per_div = 6 #div당 li수
 div_begin_num = 7 #처음 나오는 div수
 div_per_click = 6 #더보기 누를때마다 나오는 div수
