@@ -187,11 +187,13 @@ df_titles = pd.concat([df_titles, df_section_titles], ignore_index=True)
 print(df_titles.head())
 df_titles.info()
 
-# 정답 코드의 파일 저장 방식 그대로 적용 (날짜 포함 포맷)
+# 정답 코드의 파일 저장 방식 그대로 적용 (날짜 포함 포맷) # 포맷이 있어야 표로 정리됨
 # 단, 한글 깨짐으로 인해 표 뷰어가 오작동하는 것을 막기 위해 encoding='utf-8-sig'만 유지했습니다.
-file_name = './naver_headline_news_{}_{}.csv'.format(
-    category[category_sel], datetime.datetime.now().strftime('%Y%m%d')
-)
+# file_name = './naver_headline_news_{}_{}.csv'.format(
+#     category[category_sel], datetime.datetime.now().strftime('%Y%m%d')
+# )
+file_name = './naver_headline_news_{}.csv'.format(category_sel)
+
 df_titles.to_csv(file_name, index=False, encoding='utf-8-sig')
 
 print(f"CSV 저장 완료! '{file_name}' 파일이 정답 코드처럼 깔끔한 표 형태로 열립니다.")
