@@ -113,7 +113,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 # [기본 설정 정의] 정답 코드의 변수 구조 적용
 # ------------------------------------------------------------------
 category = ['Politics', 'Economics', 'Society', 'Culture', 'World', 'IT']
-category_sel = 1  # 1 = Economics (101 섹션)
+category_sel = 5  # 1 = Economics (101 섹션)
+category_sel_cop = 1 if category_sel == 1 else 0 # 기본 0 Economics 1
+
+print(category_sel_cop)
 
 options = ChromeOptions()
 options.add_argument('lang=ko_KR')
@@ -128,23 +131,23 @@ df_titles = pd.DataFrame()
 # ------------------------------------------------------------------
 # [1] Selenium 파트 (정답 코드처럼 데이터 수집)
 # ------------------------------------------------------------------
-url = 'https://news.naver.com/section/101'  # 경제 섹션
+url = 'https://news.naver.com/section/10{}'.format(category_sel)
 driver.get(url)
-button_path = '//*[@id="newsct"]/div[5]/div/div[2]/a'
+button_path = '//*[@id="newsct"]/div[{}]/div/div[2]/a'.format(category_sel_cop+4)
 
-# 더보기 버튼 6번 클릭
-for i in range(6):
+# 더보기 버튼 30번 클릭
+for i in range(31):
     try:
-        driver.find_element(By.開, button_path).click()
+        driver.find_element(By.XPATH, button_path).click()
         time.sleep(0.5)
     except:
         break
 
 titles_sel = []
-for i in range(1, 51):
+for i in range(1, 221):
     for j in range(1, 7):
         try:
-            title_xpath = '//*[@id="newsct"]/div[5]/div/div[1]/div[{}]/ul/li[{}]/div/div/div[2]/a/strong'.format(i, j)
+            title_xpath = '//*[@id="newsct"]/div[{}]/div/div[1]/div[{}]/ul/li[{}]/div/div/div[2]/a/strong'.format(category_sel_cop+4,i, j)
             # Selenium의 .text는 눈에 보이는 글자만 가져오므로 줄바꿈이 생기지 않습니다.
             title = driver.find_element(By.XPATH, title_xpath).text
             if title.strip():
@@ -163,7 +166,7 @@ df_titles = pd.concat([df_titles, df_selenium], ignore_index=True)
 # ------------------------------------------------------------------
 # [2] BeautifulSoup 파트 (줄바꿈 공백 리스크 제거)
 # ------------------------------------------------------------------
-url = 'https://news.naver.com/section/101'
+url = 'https://news.naver.com/section/10{}'.format(category_sel)
 resp = requests.get(url)
 soop = BeautifulSoup(resp.text, 'html.parser')
 title_tag = soop.select('.sa_text_strong')
@@ -189,10 +192,10 @@ df_titles.info()
 
 # 정답 코드의 파일 저장 방식 그대로 적용 (날짜 포함 포맷) # 포맷이 있어야 표로 정리됨
 # 단, 한글 깨짐으로 인해 표 뷰어가 오작동하는 것을 막기 위해 encoding='utf-8-sig'만 유지했습니다.
-# file_name = './naver_headline_news_{}_{}.csv'.format(
-#     category[category_sel], datetime.datetime.now().strftime('%Y%m%d')
-# )
-file_name = './naver_headline_news_{}.csv'.format(category_sel)
+file_name = './naver_headline_news_{}_{}.csv'.format(
+    category[category_sel], datetime.datetime.now().strftime('%Y%m%d')
+)
+# file_name = './naver_headline_news_{}.csv'.format(category_sel)
 
 df_titles.to_csv(file_name, index=False, encoding='utf-8-sig')
 
